@@ -1,10 +1,8 @@
 import java.util.*;
 import java.io.*;
 /* Maverick Ho
- * Program Assignment 2
  * Gets a string of letters from an user input and finds anagrams of the string in a text file.
  * mmho@ucsc.edu
- * Professor Bailey
  */
 class FindAng {
   public static void main(String []args) throws FileNotFoundException{

@@ -1,0 +1,10 @@
+Finds how many times a word appears and finds the top x words of certain length l appears. To do this, create a text file and either put
+the word you want to find, or two numbers denoting (top x words, of length l).
+
+Example Textfile:
+
+numerous
+Romeo
+2 9
+4 4
+Kobe
