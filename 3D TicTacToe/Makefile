@@ -7,4 +7,4 @@ TicTacToe.class: TicTacToe.java
 	javac -Xlint TicTacToe.java
 
 clean:
-	rm -f NQueens.jar TicTacToe.class
+	rm -f TicTacToe.class
