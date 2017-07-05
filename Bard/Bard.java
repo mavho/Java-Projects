@@ -1,8 +1,5 @@
 /*
- * THIS ONE FUCKING WORKS!!!
- * 
- * 
- * 
+ * Maverick Ho
  * 
  */
 import java.util.*;
@@ -33,56 +30,58 @@ public class Bard {
 				calculateLengths(words[i].toLowerCase());
 			}
 		} //end while
-		Scanner in = new Scanner(new File("input.txt"));
-		while(in.hasNextLine()){
-			//so we can go through the dictionary hashtable
-			Enumeration<String> d = dictionary.keys();
-			String line = in.nextLine().trim() + "";
-			String[] inputs = line.split("\\s+");
-			//System.out.println(inputs.length);
-			for (int i =0; i < inputs.length; i += 2){
-				try {
-					//System.out.println("i is " + i);
-					int l = Integer.parseInt(inputs[i]); //length of the words
-					//System.out.println("l is " + l);
-					int k = Integer.parseInt(inputs[i+1]); //print k words
-					//System.out.println("k is " + k);
-					//do stuff with them
-					int count = 0;
-					int element = 0;
-					//put the frequencies of dictionary into wordLengthFr
-					while(d.hasMoreElements()){
-						String key = d.nextElement();
-						if(wordLengths.get(key) == l){
-							count = dictionary.get(key);
-							wordLengthFr.put(key, count);//this hastable has words of specified length, key is string, value is integer
-							element++;
+		try{
+			Scanner in = new Scanner(new File("input.txt"));
+			//Scanner in = new Scanner(new File("input.txt"));
+			while(in.hasNextLine()){
+				//so we can go through the dictionary hashtable
+				Enumeration<String> d = dictionary.keys();
+				String line = in.nextLine().trim() + "";
+				String[] inputs = line.split("\\s+");
+				//System.out.println(inputs.length);
+				for (int i =0; i < inputs.length; i += 2){
+					try {
+						//System.out.println("i is " + i);
+						int l = Integer.parseInt(inputs[i]); //length of the words
+						//System.out.println("l is " + l);
+						int k = Integer.parseInt(inputs[i+1]); //print k words
+						//System.out.println("k is " + k);
+						//do stuff with them
+						int count = 0;
+						int element = 0;
+						//put the frequencies of dictionary into wordLengthFr
+						while(d.hasMoreElements()){
+							String key = d.nextElement();
+							if(wordLengths.get(key) == l){
+								count = dictionary.get(key);
+								wordLengthFr.put(key, count);//this hastable has words of specified length, key is string, value is integer
+								element++;
+							}
+						} //end while
+						int w = 0;
+						//so we can iterate through wordLengthFr
+						Set<String> keySet = wordLengthFr.keySet();
+						Iterator<String> keySetIterator = keySet.iterator();
+						int[] lenFr = new int[element];
+						//store the frequencies into an array
+						while (keySetIterator.hasNext()){
+							String key = keySetIterator.next();
+							lenFr[w] = wordLengthFr.get(key);
+							w++;
 						}
-					} //end while
-					int w = 0;
-					//so we can iterate through wordLengthFr
-					Set<String> keySet = wordLengthFr.keySet();
-					Iterator<String> keySetIterator = keySet.iterator();
-					int[] lenFr = new int[element];
-					//store the frequencies into an array
-					while (keySetIterator.hasNext()){
-						String key = keySetIterator.next();
-						lenFr[w] = wordLengthFr.get(key);
-						w++;
-					}
-					//sort the array from smallest to greatest
-					Arrays.sort(lenFr);
-					int lengthOfArray = lenFr.length -1;
-					//another enumeration to go through wordLengthFr
-					Enumeration<String> f2 = wordLengthFr.keys();
-					int count2 = 0;
-					//Get the last elements of the array and match up those frequencies to their respective key
-					for(int e = lengthOfArray;  e >= lengthOfArray - k; e--){
-						//if there are no more elements in the enumeration, break
-						if (f2.hasMoreElements() == false){
-							break;
-						}
-						count2++;
+						//sort the array from smallest to greatest
+						Arrays.sort(lenFr);
+						int lengthOfArray = lenFr.length -1;
+						//another enumeration to go through wordLengthFr
+						Enumeration<String> f2 = wordLengthFr.keys();
+						int count2 = 0;
+						//Get the last elements of the array and match up those frequencies to their respective key
+						for(int e = lengthOfArray;  e >= lengthOfArray - k; e--){
+							//if there are no more elements in the enumeration, break
+							if (f2.hasMoreElements() == false){
+								break;
+							}
+							count2++;
 						//while count is less than count2, which is basically k
 			        	 while (count2 <= k){
 			        		 String key = f2.nextElement();
@@ -94,30 +93,34 @@ public class Bard {
 			        		 }
 			        		 //key will go onto the next key in the enumeration and see if its value
 			        		 //is in the next array index
-			           }
-					   f2 = wordLengthFr.keys();
-			      }
-					f0.write("\n");
-					//clear that array so the next input number pair can use it
-					wordLengthFr.clear();
-				} //end try
-				//If it is not a number, perform the next operations
-				catch (NumberFormatException e){
-					//System.out.println("it's a word");
-					//input's word
-					String lookWord = inputs[i];
-					//if the hashtable contains the same key
-					if (dictionary.containsKey(lookWord) == true){
-						//System.out.println("found same key");
-						//writes out the word's value, which is the frequency of the word
-						f0.write( dictionary.get(lookWord) + "\n");
-					} else {
-						f0.write("0\n");
+						}
+						f2 = wordLengthFr.keys();
 					}
-				} //end catch
-			}
-		}	
-		in.close();
+						f0.write("\n");
+						//clear that array so the next input number pair can use it
+						wordLengthFr.clear();
+					} //end try
+					//If it is not a number, perform the next operations
+					catch (NumberFormatException e){
+						//System.out.println("it's a word");
+						//input's word
+						String lookWord = inputs[i];
+						//if the hashtable contains the same key
+						if (dictionary.containsKey(lookWord) == true){
+							//System.out.println("found same key");
+							//writes out the word's value, which is the frequency of the word
+							f0.write( dictionary.get(lookWord) + "\n");
+						} else {
+							f0.write("0\n");
+						}
+					} //end catch
+				}
+			}	
+			in.close();
+		}
+		catch(FileNotFoundException e){
+			System.out.println("Make sure input.txt is in the same directory!");
+		}
 		bard.close();
 		f0.close();
 
