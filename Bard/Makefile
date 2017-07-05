@@ -3,6 +3,7 @@ SOURCES    = Makefile $(JAVASRC)
 MAINCLASS  = Bard
 CLASSES    = Bard.class
 JARFILE    = Bard.jar
+PFILES 	   = analysis.txt
 
 all: $(JARFILE)
 
@@ -15,4 +16,4 @@ $(CLASSES): $(JAVASRC)
 	javac -Xlint $(JAVASRC)
 
 clean:
-	rm $(CLASSES) $(JARFILE)
+	rm $(CLASSES) $(JARFILE) $(PFILES)
