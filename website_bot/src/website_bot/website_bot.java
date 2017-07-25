@@ -10,7 +10,6 @@ package website_bot;
  * 
  * Working verison 1.5.2: html comparison works
  * str attached to email is fine
- * very first startup works
  * 
  * TODO:
  * 	find a way to capture deletions in the HTML parse file
@@ -75,8 +74,6 @@ public class website_bot {
         // get current checksum using static utility method
         String currentChecksum = getChecksumForURL(url);
         loadHTML(siteStr,initialData);
-    	System.out.println("This is the initial for "+ company + " " + initialData.keySet().toString());
-
         startup2 = 0;
         //we only want the startup function to run once
         if (startup2 == run_number){
@@ -90,13 +87,14 @@ public class website_bot {
     			System.out.println("First startup when nothing is in the hashmap");
         		br.close();
         	}
+        	System.out.println("This is the initial for "+ company + " " + initialData.keySet().toString());
         	startup(company, currentChecksum, siteStr, f0, fileStream);
         }else if (currentChecksum.equals(lastChecksum)) {
             System.out.println(company + " hasn't been updated");
         } else if (!currentChecksum.equals(lastChecksum)){
         	System.out.println(currentChecksum + " " + lastChecksum);
         	checkSumDB.put(url, currentChecksum);
-        	//Thread.sleep(5000);
+        	Thread.sleep(5000);
         	loadHTML(url, changedData);
         	if (!hashtablesEqual(initialData, changedData)){
         		// persist this checksum to map
@@ -150,8 +148,8 @@ public class website_bot {
 				incrementValues(values, changedData);
 			}
 		}
-		System.out.println(initialData.keySet().toString());
 		System.out.println(changedData.keySet().toString());
+		//System.out.println(initialData.keySet().toString());
 		//get the most recent one and update if different 
 		if (SHA_value.equals(lastFileVal)){
 			System.out.println(SHA_value + " "+ lastFileVal);
@@ -190,8 +188,8 @@ public class website_bot {
 		Hashtable<String, Integer> changedData2) {
 		System.out.println("Entered Hashtable Equal method");
 		changedStr = "";
-		System.out.println(initialData2.keySet().toString());
-		System.out.println(changedData2.keySet().toString());
+		//System.out.println(initialData2.keySet().toString());
+		//System.out.println(changedData2.keySet().toString());
 		Enumeration<String> e = changedData2.keys();
 		while(e.hasMoreElements()){
 			String key = e.nextElement();
