@@ -1,19 +1,25 @@
 package website_bot;
 /*
  * Website Product Tracker Bot
+ * Author: Maverick Ho
  * 
  * Goal is to track the products in a specified link and email the updates to me
  * 
+ * Make sure you have javax.mail.jar and jsoup-1.version#.jar in your directory/path to run website_botV2.java
+ * 
  *  Working version 2:
  *  Everything works, just handle exceptions, etc.
+ *  
  * TODO:
  * Error Handling, log and note down crashes
- * 
- * 
+ * change h3 to a
+ * change recipient email to sales@cloudharmonics.com
+ * remove print statements for the final thing
+ * package java in the executable
  */
 
 import java.io.*;
-import java.net.UnknownHostException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -22,23 +28,22 @@ import org.jsoup.nodes.*;
 import org.jsoup.select.Elements;
 
 
-public class website_botV2 {
+public class website_bot {
 	
-	static Map<String, String> checkSumDB = new HashMap<String, String>();
 	static int run_number;
 	static DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 	static LocalDateTime now = LocalDateTime.now();
 	static Hashtable<String, Integer> initialData = new Hashtable<String, Integer>();
 	static Hashtable<String, Integer> changedData = new Hashtable<String, Integer>();
-	public static String changedStr;
-	public static String deletedStr;
+	private static String changedStr;
+	private static String deletedStr;
 	
-	
-	public static void main(String[] args) throws InterruptedException, IOException{
+	public static void main(String[] args) throws InterruptedException, IOException, InvocationTargetException{
+		PrintWriter errorLog = new PrintWriter(new FileWriter("ErrorLog.txt",true));
 		//email.sendEmail();
-				while (true){
-					//contains the link and the company name
-					try{
+			while (true){
+				//contains the link and the company name
+				try{
 					Scanner file = new Scanner(new File ("inputs.txt"));
 					while (file.hasNextLine()){
 						String line = file.nextLine().trim() + "";
@@ -49,14 +54,19 @@ public class website_botV2 {
 					}
 					run_number += 1;
 					//divide by 1000 to determine times in seconds
-		            Thread.sleep(10800000);
-		            file.close();
-					} catch (FileNotFoundException e){
-						System.out.println("inputs.txt not found");
+					Thread.sleep(20000);
+					//System.out.println(changedStr.length());
+					//System.out.println(deletedStr.length());
+					//Thread.sleep(10800000);
+					//Thread.sleep(43200000);
+					file.close();
+					} catch (Exception e){
+						errorLog.println(e);
+						errorLog.close();
 						System.exit(1);
 					}
 				}
-	}
+		}
 
 	private static void checkSHAdiff(String url, String company, int run_number2) throws InterruptedException, IOException {
 		PrintWriter fileStream = new PrintWriter(new FileWriter(company + "_Parsed_HTML.txt",true));
@@ -88,12 +98,13 @@ public class website_botV2 {
             	updatedList.println(key);
             }
 			updatedList.close();
-        }
+        } /*else{
+        	System.out.println(company + ": nothing has changed");
+        }*/
         sc.close();
         fileStream.close();
 		initialData.clear();
 		changedData.clear();
-		
 	}
 	private static void txtToHASH(Scanner sc, Hashtable<String, Integer> initialData2) throws IOException {
 		String values = "";
@@ -104,14 +115,13 @@ public class website_botV2 {
 		}
 	}
 	//get deletions and updates from the hashtables
-	private static boolean hashtablesEqual(Hashtable<String, Integer> changedData2,
-			Hashtable<String, Integer> initialData2) {
+	private static boolean hashtablesEqual(Hashtable<String, Integer> changedData2,	Hashtable<String, Integer> initialData2) {
 			changedStr = "";
 			deletedStr = "";
 			Enumeration<String> e = changedData2.keys();
 			Enumeration<String> s = initialData2.keys();
 			boolean updated1 = false;
-			boolean updated2=false;
+			boolean updated2 = false;
 			while(e.hasMoreElements()){
 				String key = e.nextElement();
 				if(!initialData2.containsKey(key)){
@@ -121,6 +131,7 @@ public class website_botV2 {
 					updated1 = true;
 				}
 			}
+			//checking for deletions from changed data
 			while(s.hasMoreElements()){
 				String value = s.nextElement();
 				if(!changedData2.containsKey(value)){
@@ -135,26 +146,31 @@ public class website_botV2 {
 			}
 			return false;
 		}
-	//load up the a href attributes text from the html from the website and loads them into a specified hashtable. Ignores Non Latin characters
+	//load up the specified html attributes text from the html from the website and loads them into a specified hashtable. Ignores Non Latin characters
 	private static void loadHTML(String url, Hashtable<String, Integer> updatedHash) throws IOException{
-		PrintWriter errorLog = new PrintWriter(new FileWriter("ErrorLog.txt",true));
-		try{
-			Document doc = Jsoup.connect(url).get(); 
-			Elements containers = doc.select("a");
-			for (Element c: containers){
-				String value = c.text().toLowerCase();
-				//ignores non-latin characters
-				value = value.replaceAll("[\\x{100}-\\x{10FFFF}]+", "");
-				if(!value.isEmpty() && (value.length() < 30)){
-					incrementValues(value,updatedHash);
-				}
+		Document doc = Jsoup.connect(url).get(); 
+		String attribute = "a";
+		//h3
+		switch(url){
+			case "https://www.rubrik.com/product/overview/" : attribute = "span.title";
+				break;
+			case "https://www.arista.com/en/products/switches" : attribute = "th";
+				break;
+		}	
+		/*if (url.equals("https://www.rubrik.com/product/overview/")){
+			attribute = "span.title";
+			} else if(url.equals("https://www.arista.com/en/products/switches")){
+				attribute = "th";
+				}*/
+		Elements containers = doc.select(attribute);
+		for (Element c: containers){
+			String value = c.text().toLowerCase();
+			//ignores non-latin characters, it's the unicode codepoint range
+			value = value.replaceAll("[\\x{100}-\\x{10FFFF}]+", "");
+			if(!value.isEmpty() && (value.length() < 30)){
+				incrementValues(value,updatedHash);
 			}
-		} catch (UnknownHostException e){
-			DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-			LocalDateTime now = LocalDateTime.now();
-			errorLog.println(e +" : " + dtf.format(now));
 		}
-		errorLog.close();
 	}
 	private static void incrementValues(String words, Hashtable<String, Integer> updatedHash) {
 		//if the key is the same, if there are duplicate keys
@@ -165,8 +181,5 @@ public class website_botV2 {
 			//each unique word has the value of one
 			updatedHash.put(words, 1);
 		}
-	}
-	public static void sendEmail(){
-		sendEmail();
 	}
 }
