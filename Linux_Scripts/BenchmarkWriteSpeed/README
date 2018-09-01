@@ -1,0 +1,4 @@
+@author: Maverick Ho
+Sequentially writes to a file in 1M chunks.
+First arguement should be file name, and the second one being size of the file.
+Compare with dd, but make sure the size of the file is the same.
