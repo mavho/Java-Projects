@@ -1,0 +1,5 @@
+Simple scripts I wrote to track various statstics to get a better idea of behavior of the linux kernel and cache. The main file is generatetests.sh, which uses the other three files in the directory. Each of the other scripts can be used individually.
+
+Before use, generatetests uses two external libraries called vmtouch and pcstat. They must be in the path before use. Additionally the arguements for generate tests goes as follows: generatetests iostatfile vmstatfile meminfofile outputstatfile.
+
+Usage: The files monitored /proc/meminfo and /data/mgr/html/outputstat.txt. Those may or may not be the paths to those files, so make sure they are there before. Use of piping is required for individual tests. 
