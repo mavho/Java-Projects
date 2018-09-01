@@ -1,0 +1,2 @@
+Expanded with a GUI for my anagram game. First ever attempt at creating a GUI using the JFrame Library. Finished project on 11/28/2017, added some touches and decided to add it here.
+Takes one command line arguement, which is the number of players.

@@ -1,0 +1,10 @@
+cat
+dog
+elephant
+giraffe
+mouse
+donkey
+shark
+alligator
+parrot
+buffalo
