@@ -13,23 +13,9 @@ def main():
 	global start
 	start = timeit.default_timer()
 	if sys.argv[1] == 'io':
-	#	try:
 		iotest()
-		#signialsignal(signal.SIGINT,interrupt_hander, start)
-	#	finally:
-	#		fd = open(sys.argv[2]+'.csv', 'a')
-	#		stop = timeit.default_timer()
-	#		seconds = stop - start
-	#		fd.write(str(seconds))
 	elif sys.argv[1] == 'vm':
-	#	try:
 		vmtest()
-		#signal.signal(signal.SIGINT,interrupt_handler, start)
-	#	finally:
-	#		fd = open(sys.argv[2]+'.csv', 'a')
-	#		stop = timeit.default_timer()
-	#		seconds = stop - start
-	#		fd.write(str(seconds))
 	else:
 		print "Not a valid configuration, specify io or vm"
 	
@@ -81,9 +67,6 @@ def vmtest():
 		iw = csv.writer(f)
 		iw.writerow([datetime.datetime.now()])
 		iw.writerow(vmfieldnames)
-		startTimer = True
-		count = 0
-		cacheTime = 0
 		for line in iter(sys.stdin.readline, ""):
 			signal.signal(signal.SIGINT,interrupt_handler)
 			line.strip()
@@ -91,20 +74,6 @@ def vmtest():
 			#print(data)
 			if data[0] in ['procs', 'r']:
 				continue
-			#the initial blocks in
-			if (int(data[8]) > 50 and startTimer == True):
-				cacheTime = timeit.default_timer()
-				startTimer = False
-					
-			if (260 <= int(data[3]) <= 270) and count < 30:
-				stopTime = timeit.default_timer()
-				seconds = stopTime - cacheTime 
-				with open("timeFile.txt", 'a') as timeFile:
-		#			print str(seconds) + ", " + str(data[5])
-					timeFile.write(str(seconds) + ", " + str(data[5]) + '\n')
-				count += 1
-
-		#	print str(data[5])
 			iw.writerow([time.strftime("%H:%M:%S")] + data)	
 		
 if __name__ == "__main__":
